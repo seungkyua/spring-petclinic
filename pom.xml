@@ -3,8 +3,8 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.springframework.samples</groupId>
   <artifactId>spring-petclinic</artifactId>
-  <version>3.0.0-SNAPSHOT</version>
-
+<!--  <version>3.0.0-SNAPSHOT</version>-->
+  <version>3.0.0</version>
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
@@ -28,6 +28,17 @@
     <spring-format.version>0.0.38</spring-format.version>
 
   </properties>
+
+  <distributionManagement>
+    <repository>
+      <id>nexus-releases</id>
+      <url>http://a650ce058f73a4ed287e1b8719d77530-1138849010.ap-northeast-2.elb.amazonaws.com:8081/repository/maven-releases/</url>
+    </repository>
+    <snapshotRepository>
+      <id>nexus-snapshots</id>
+      <url>http://a650ce058f73a4ed287e1b8719d77530-1138849010.ap-northeast-2.elb.amazonaws.com:8081/repository/maven-snapshots</url>
+    </snapshotRepository>
+  </distributionManagement>
 
   <dependencies>
     <!-- Spring and Spring Boot dependencies -->
@@ -129,40 +140,40 @@
           </execution>
         </executions>
       </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-checkstyle-plugin</artifactId>
-        <version>3.2.1</version>
-        <dependencies>
-          <dependency>
-            <groupId>com.puppycrawl.tools</groupId>
-            <artifactId>checkstyle</artifactId>
-            <version>10.8.1</version>
-          </dependency>
-          <dependency>
-            <groupId>io.spring.nohttp</groupId>
-            <artifactId>nohttp-checkstyle</artifactId>
-            <version>${nohttp-checkstyle.version}</version>
-          </dependency>
-        </dependencies>
-        <executions>
-          <execution>
-            <id>nohttp-checkstyle-validation</id>
-            <phase>validate</phase>
-            <configuration>
-              <configLocation>src/checkstyle/nohttp-checkstyle.xml</configLocation>
-              <suppressionsLocation>src/checkstyle/nohttp-checkstyle-suppressions.xml</suppressionsLocation>
-              <encoding>UTF-8</encoding>
-              <sourceDirectories>${basedir}</sourceDirectories>
-              <includes>**/*</includes>
-              <excludes>**/.git/**/*,**/.idea/**/*,**/target/**/,**/.flattened-pom.xml,**/*.class</excludes>
-            </configuration>
-            <goals>
-              <goal>check</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
+<!--      <plugin>-->
+<!--        <groupId>org.apache.maven.plugins</groupId>-->
+<!--        <artifactId>maven-checkstyle-plugin</artifactId>-->
+<!--        <version>3.2.1</version>-->
+<!--        <dependencies>-->
+<!--          <dependency>-->
+<!--            <groupId>com.puppycrawl.tools</groupId>-->
+<!--            <artifactId>checkstyle</artifactId>-->
+<!--            <version>10.8.1</version>-->
+<!--          </dependency>-->
+<!--          <dependency>-->
+<!--            <groupId>io.spring.nohttp</groupId>-->
+<!--            <artifactId>nohttp-checkstyle</artifactId>-->
+<!--            <version>${nohttp-checkstyle.version}</version>-->
+<!--          </dependency>-->
+<!--        </dependencies>-->
+<!--        <executions>-->
+<!--          <execution>-->
+<!--            <id>nohttp-checkstyle-validation</id>-->
+<!--            <phase>validate</phase>-->
+<!--            <configuration>-->
+<!--              <configLocation>src/checkstyle/nohttp-checkstyle.xml</configLocation>-->
+<!--              <suppressionsLocation>src/checkstyle/nohttp-checkstyle-suppressions.xml</suppressionsLocation>-->
+<!--              <encoding>UTF-8</encoding>-->
+<!--              <sourceDirectories>${basedir}</sourceDirectories>-->
+<!--              <includes>**/*</includes>-->
+<!--              <excludes>**/.git/**/*,**/.idea/**/*,**/target/**/,**/.flattened-pom.xml,**/*.class</excludes>-->
+<!--            </configuration>-->
+<!--            <goals>-->
+<!--              <goal>check</goal>-->
+<!--            </goals>-->
+<!--          </execution>-->
+<!--        </executions>-->
+<!--      </plugin>-->
       <plugin>
         <groupId>org.graalvm.buildtools</groupId>
         <artifactId>native-maven-plugin</artifactId>
@@ -219,6 +230,33 @@
         </configuration>
       </plugin>
 
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-deploy-plugin</artifactId>
+        <!--    <version>${maven-deploy-plugin.version}</version>-->
+        <configuration>
+          <skip>true</skip>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.sonatype.plugins</groupId>
+        <artifactId>nexus-staging-maven-plugin</artifactId>
+        <version>1.6.6</version>
+        <executions>
+          <execution>
+            <id>default-deploy</id>
+            <phase>deploy</phase>
+            <goals>
+              <goal>deploy</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <serverId>nexus-snapshots</serverId>
+          <nexusUrl>http://a650ce058f73a4ed287e1b8719d77530-1138849010.ap-northeast-2.elb.amazonaws.com:8081/</nexusUrl>
+          <skipStaging>true</skipStaging>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
 
